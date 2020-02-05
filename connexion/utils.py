@@ -69,9 +69,10 @@ def deep_get(obj, keys):
     """
     if not keys:
         return obj
-    try:
+
+    if isinstance(obj, list):
         return deep_get(obj[int(keys[0])], keys[1:])
-    except ValueError:
+    else:
         return deep_get(obj[keys[0]], keys[1:])
 
 
@@ -162,30 +163,6 @@ def is_null(value):
         return True
 
     return False
-
-
-class Jsonifier(object):
-    def __init__(self, json_):
-        self.json = json_
-
-    def dumps(self, data):
-        """ Central point where JSON serialization happens inside
-        Connexion.
-        """
-        return "{}\n".format(self.json.dumps(data, indent=2))
-
-    def loads(self, data):
-        """ Central point where JSON serialization happens inside
-        Connexion.
-        """
-        if isinstance(data, six.binary_type):
-            data = data.decode()
-
-        try:
-            return self.json.loads(data)
-        except Exception:
-            if isinstance(data, six.string_types):
-                return data
 
 
 def has_coroutine(function, api=None):

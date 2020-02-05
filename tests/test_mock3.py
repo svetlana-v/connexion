@@ -2,7 +2,7 @@ from connexion.mock import MockResolver
 from connexion.operations import OpenAPIOperation
 
 
-def test_mock_resolver():
+def test_mock_resolver_default():
     resolver = MockResolver(mock_all=True)
 
     responses = {
@@ -11,7 +11,46 @@ def test_mock_resolver():
                 'application/json': {
                     'examples': {
                         "super_cool_example": {
-                            'foo': 'bar'
+                            "value": {
+                                'foo': 'bar'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    operation = OpenAPIOperation(
+        api=None,
+        method='GET',
+        path='endpoint',
+        path_parameters=[],
+        operation={
+            'responses': responses
+        },
+        app_security=[],
+        resolver=resolver
+    )
+    assert operation.operation_id == 'mock-1'
+
+    response, status_code = resolver.mock_operation(operation)
+    assert status_code == 200
+    assert response == {'foo': 'bar'}
+
+
+def test_mock_resolver_numeric():
+    resolver = MockResolver(mock_all=True)
+
+    responses = {
+        '200': {
+            'content': {
+                'application/json': {
+                    'examples': {
+                        "super_cool_example": {
+                            "value": {
+                                'foo': 'bar'
+                            }
                         }
                     }
                 }

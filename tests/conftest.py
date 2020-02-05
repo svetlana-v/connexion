@@ -97,6 +97,11 @@ def json_validation_spec_dir():
     return FIXTURES_FOLDER / 'json_validation'
 
 
+@pytest.fixture(scope='session')
+def json_datetime_dir():
+    return FIXTURES_FOLDER / 'datetime_support'
+
+
 def build_app_from_fixture(api_spec_folder, spec_file='openapi.yaml', **kwargs):
     debug = True
     if 'debug' in kwargs:
@@ -177,11 +182,6 @@ def unordered_definition_app(request):
 def bad_operations_app(request):
     return build_app_from_fixture('bad_operations', request.param,
                                   resolver_error=501)
-
-
-@pytest.fixture(scope="session", params=SPECS)
-def query_sanitazion(request):
-    return build_app_from_fixture('query_sanitazion', request.param)
 
 
 if sys.version_info < (3, 5, 3) and sys.version_info[0] == 3:
